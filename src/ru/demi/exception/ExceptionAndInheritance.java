@@ -1,5 +1,7 @@
 package ru.demi.exception;
 
+import java.io.IOException;
+
 class ExceptionAndInheritance {
 
     void methodWithoutException() {}
@@ -8,6 +10,8 @@ class ExceptionAndInheritance {
     void methodWithUncheckedException() throws RuntimeException {}
 
     void methodWithCheckedException() throws Exception {}
+
+    void methodWithAnotherUncheckedException() throws ArithmeticException {}
 
     // you can get rid of exception declaration in overridden method
     static class OverrideWithoutExceptions extends ExceptionAndInheritance {
@@ -37,6 +41,22 @@ class ExceptionAndInheritance {
         }
     }
 
+    static class OverrideWithChildException extends ExceptionAndInheritance {
+        @Override
+        void methodWithUncheckedException() throws ArithmeticException {
+        }
+
+        @Override
+        void methodWithCheckedException() throws IOException {
+        }
+    }
+
+    static class OverrideWithParentException extends ExceptionAndInheritance {
+        @Override
+        void methodWithAnotherUncheckedException() throws RuntimeException {
+        }
+    }
+
     // we cannot make stricter exception declaration in overridden method
     static class OverrideWithCheckedException extends ExceptionAndInheritance {
 
@@ -45,13 +65,18 @@ class ExceptionAndInheritance {
 //        void methodWithoutException() throws Exception {
 //        }
 
+        // we have compilation error: overridden method does not throw java.lang.Exception
+//        @Override
+//        void methodWithUncheckedException() throws Exception {
+//        }
+
         @Override
         void methodWithCheckedException() throws Exception {
         }
 
-        // we have compilation error: overridden method does not throw java.lang.Exception
+        // you cannot throw parent class of checked exception in overridden method
 //        @Override
-//        void methodWithUncheckedException() throws Exception {
+//        void methodWithCheckedException() throws Throwable {
 //        }
     }
 }
